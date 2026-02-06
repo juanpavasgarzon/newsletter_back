@@ -28,9 +28,6 @@ async function bootstrap() {
   const morganFormat = isProduction ? 'combined' : 'dev';
   app.use(morgan(morganFormat));
 
-  const apiPrefix = config.get<string>('app.apiPrefix', 'api');
-  app.setGlobalPrefix(apiPrefix);
-
   const corsOrigin = config.get<string>('app.corsOrigin');
   app.enableCors({
     origin: corsOrigin,
@@ -47,7 +44,11 @@ async function bootstrap() {
   });
   app.useGlobalPipes(validationPipeOptions);
 
-  app.useGlobalFilters(new AllExceptionsFilter());
+  const allExceptionsFilter = new AllExceptionsFilter();
+  app.useGlobalFilters(allExceptionsFilter);
+
+  const apiPrefix = config.get<string>('app.apiPrefix', 'api');
+  app.setGlobalPrefix(apiPrefix);
 
   const port = config.get<number>('app.port', 3001);
   await app.listen(port, '0.0.0.0');
