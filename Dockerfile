@@ -17,21 +17,18 @@ WORKDIR /app
 
 RUN apk add --no-cache sqlite
 
-RUN addgroup -g 1001 app && \
-  adduser -D -u 1001 -G app app
+RUN mkdir -p /app/data && chown -R node:node /app
 
-RUN mkdir -p /app/data && chown -R app:app /app/data
+COPY --chown=node:node package.json package-lock.json ./
 
-COPY --chown=app:app package.json package-lock.json ./
+COPY --from=builder --chown=node:node /app/dist ./dist
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 
-COPY --from=builder --chown=app:app /app/dist ./dist
-COPY --from=builder --chown=app:app /app/node_modules ./node_modules
-
-COPY --chown=app:app config ./config
+COPY --chown=node:node config ./config
 
 ENV NODE_ENV=production
 
-USER app
+USER node
 
 EXPOSE 8000
 
