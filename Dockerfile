@@ -26,6 +26,9 @@ COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 
 COPY --chown=node:node config ./config
 
+COPY --chown=node:node entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+
 ENV NODE_ENV=production
 
 USER node
