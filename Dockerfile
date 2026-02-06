@@ -17,23 +17,17 @@ WORKDIR /app
 
 RUN apk add --no-cache sqlite
 
-RUN mkdir -p /app/data && chown -R node:node /app
+RUN mkdir -p /app/data && chmod 777 /app/data
 
-COPY --chown=node:node package.json package-lock.json ./
+COPY package.json package-lock.json ./
 
-COPY --from=builder --chown=node:node /app/dist ./dist
-COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
 
-COPY --chown=node:node config ./config
-
-COPY --chown=node:node entrypoint.sh ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
+COPY config ./config
 
 ENV NODE_ENV=production
 
-USER node
-
 EXPOSE 8000
 
-ENTRYPOINT ["./entrypoint.sh"]
 CMD ["node", "dist/main.js"]
