@@ -32,4 +32,5 @@ USER node
 
 EXPOSE 8000
 
+ENTRYPOINT ["./entrypoint.sh"]
 CMD ["node", "dist/main.js"]
