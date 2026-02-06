@@ -1,0 +1,82 @@
+---
+description: Always use braces for control flow and prefer early exit to reduce nesting
+alwaysApply: true
+---
+
+# Control flow y llaves
+
+Al generar o modificar código, sigue estas reglas.
+
+## 1. Siempre usar llaves `{}`
+
+Nunca escribas un `if`, `else`, `for`, `while` o `do` sin llaves, aunque el cuerpo sea una sola línea.
+
+```typescript
+// ❌ MAL
+if (x) doSomething();
+if (y) return;
+for (const i of arr) process(i);
+
+// ✅ BIEN
+if (x) {
+  doSomething();
+}
+if (y) {
+  return;
+}
+for (const i of arr) {
+  process(i);
+}
+```
+
+## 2. Preferir salida temprana (early return / continue)
+
+Invierte la condición y usa `return` o `continue` para reducir anidación y complejidad ciclomática. Así el código “feliz” queda menos anidado.
+
+```typescript
+// ❌ MAL (anidación innecesaria)
+function handle(row) {
+  if (isValid(row)) {
+    const data = getData(row);
+    if (data) {
+      process(data);
+    }
+  }
+}
+
+// ✅ BIEN (salida temprana)
+function handle(row) {
+  if (!isValid(row)) {
+    return;
+  }
+  const data = getData(row);
+  if (!data) {
+    return;
+  }
+  process(data);
+}
+```
+
+En bucles, usa `continue` con la misma idea:
+
+```typescript
+// ❌ MAL
+for (const row of rows) {
+  if (valid(row)) {
+    // mucho código anidado
+  }
+}
+
+// ✅ BIEN
+for (const row of rows) {
+  if (!valid(row)) {
+    continue;
+  }
+  // resto del código al mismo nivel
+}
+```
+
+## Resumen
+
+- Siempre `{ }` en `if` / `else` / `for` / `while` / `do`.
+- Preferir `if (!cond) { return; }` o `if (!cond) { continue; }` en lugar de anidar todo dentro de `if (cond)`.
