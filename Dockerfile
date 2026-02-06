@@ -1,4 +1,4 @@
-FROM node:22.18.0-bookworm AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -11,12 +11,16 @@ RUN npm run build
 
 RUN npm prune --production
 
-FROM node:22.18.0-bookworm-slim AS production
+FROM node:22-alpine AS production
 
 WORKDIR /app
 
-RUN groupadd --gid 1000 app && \
-    useradd --uid 1000 --gid app --shell /bin/false --create-home app
+RUN apk add --no-cache sqlite
+
+RUN addgroup -g 1001 app && \
+  adduser -D -u 1001 -G app app
+
+RUN mkdir -p /app/data && chown -R app:app /app/data
 
 COPY --chown=app:app package.json package-lock.json ./
 
@@ -29,6 +33,6 @@ ENV NODE_ENV=production
 
 USER app
 
-EXPOSE 3001
+EXPOSE 8000
 
 CMD ["node", "dist/main.js"]

@@ -13,8 +13,6 @@ coverage
 *.swp
 *.swo
 
-.env
-.env.*
 !.env.example
 
 test
