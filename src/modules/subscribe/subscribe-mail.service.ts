@@ -21,7 +21,9 @@ export class SubscribeMailService {
   sendWelcome(to: string, lang: SubscriberLang): Promise<void> {
     const from = this.mailConfig.from!;
     const subject = WELCOME_SUBJECT[lang];
-    const html = renderEmailTemplate('welcome', lang, {});
+    const frontendUrl = this.mailConfig.frontendUrl ?? '';
+    const unsubscribeUrl = `${frontendUrl}/${lang}/subscription/unsubscribe?email=${encodeURIComponent(to)}`;
+    const html = renderEmailTemplate('welcome', lang, { unsubscribeUrl });
     return this.mailService.send({ from, to, subject, html });
   }
 }

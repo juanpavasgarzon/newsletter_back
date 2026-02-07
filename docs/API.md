@@ -249,7 +249,16 @@ Elimina todos los artículos del grupo (es y en).
 
 ## Subscribe
 
-Prefijo: `/subscribe`. El controlador usa `JwtAuthGuard`; solo la suscripción es pública.
+Prefijo: `/subscribe`. El controlador usa `JwtAuthGuard` por defecto; las rutas marcadas como **Público** no requieren token.
+
+| Método | Ruta                    | Auth     | Descripción                    |
+| ------ | ----------------------- | -------- | ------------------------------ |
+| POST   | /subscribe              | Público  | Alta (suscribirse)             |
+| POST   | /subscribe/unsubscribe  | Público  | Baja por body                  |
+| GET    | /subscribe/unsubscribe  | Público  | Baja por query (enlaces email) |
+| GET    | /subscribe/count        | Protegido | Conteo de suscriptores        |
+| GET    | /subscribe              | Protegido | Listar suscriptores           |
+| GET    | /subscribe/emails       | Protegido | Lista de emails (admin)      |
 
 ### POST /subscribe
 
@@ -264,7 +273,7 @@ Suscribe un email a la newsletter y envía email de bienvenida.
 | email | string | sí        | Email válido                |
 | lang  | string | no        | `es` \| `en`. Default: `es` |
 
-**Respuesta 201:**
+**Respuesta 200:**
 
 ```json
 {
@@ -274,6 +283,62 @@ Suscribe un email a la newsletter y envía email de bienvenida.
 ```
 
 Si el email ya está suscrito: **409 Conflict**.
+
+### POST /subscribe/unsubscribe
+
+Da de baja un email de la newsletter (eliminación de datos / derecho de supresión). Idempotente: siempre responde `ok: true` aunque el email no estuviera suscrito (no revela si el email estaba en la lista).
+
+**Público.** Pensado para formularios o llamadas desde el front.
+
+**Body (JSON):**
+
+| Campo | Tipo   | Requerido | Descripción  |
+| ----- | ------ | --------- | ------------ |
+| email | string | sí        | Email válido |
+
+**Respuesta 200:**
+
+```json
+{
+  "ok": true
+}
+```
+
+### GET /subscribe/unsubscribe
+
+Da de baja un email vía query. Pensado para enlaces en correos (ej. “Darse de baja” al pie del email).
+
+**Público.**
+
+**Query:**
+
+| Parámetro | Tipo   | Requerido | Descripción  |
+| --------- | ------ | --------- | ------------ |
+| email     | string | sí        | Email válido |
+
+**Respuesta 200:**
+
+```json
+{
+  "ok": true
+}
+```
+
+Si falta o es inválido el query `email`: **400 Bad Request**.
+
+### GET /subscribe/count
+
+Devuelve el número de suscriptores de la newsletter.
+
+**Requiere autenticación.**
+
+**Respuesta 200:**
+
+```json
+{
+  "count": 42
+}
+```
 
 ### GET /subscribe
 
@@ -301,20 +366,6 @@ Lista suscriptores con paginación por cursor.
     }
   ],
   "nextCursor": "base64..."
-}
-```
-
-### GET /subscribe/count
-
-Devuelve el número de suscriptores de la newsletter.
-
-**Requiere autenticación.**
-
-**Respuesta 200:**
-
-```json
-{
-  "count": 42
 }
 ```
 

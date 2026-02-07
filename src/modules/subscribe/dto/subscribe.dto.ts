@@ -9,3 +9,13 @@ export class SubscribeInputDto {
   @IsIn(SUBSCRIBER_LANGS)
   lang?: (typeof SUBSCRIBER_LANGS)[number];
 }
+
+export class UnsubscribeInputDto {
+  @IsEmail()
+  email: string;
+}
+
+export class UnsubscribeQueryDto {
+  @IsEmail()
+  email: string;
+}

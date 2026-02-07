@@ -9,6 +9,7 @@ import { SubscribeUseCase } from './use-cases/subscribe.use-case';
 import { GetAllEmailsUseCase } from './use-cases/get-all-emails.use-case';
 import { GetSubscriberCountUseCase } from './use-cases/get-subscriber-count.use-case';
 import { ListSubscribersUseCase } from './use-cases/list-subscribers.use-case';
+import { UnsubscribeUseCase } from './use-cases/unsubscribe.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Subscriber]), MailModule],
@@ -17,6 +18,7 @@ import { ListSubscribersUseCase } from './use-cases/list-subscribers.use-case';
     SubscribeMailService,
     SubscribeNotifyService,
     SubscribeUseCase,
+    UnsubscribeUseCase,
     GetAllEmailsUseCase,
     GetSubscriberCountUseCase,
     ListSubscribersUseCase,

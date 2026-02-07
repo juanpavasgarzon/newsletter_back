@@ -1,18 +1,28 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { SubscribeUseCase } from './use-cases/subscribe.use-case';
+import { UnsubscribeUseCase } from './use-cases/unsubscribe.use-case';
 import { GetAllEmailsUseCase } from './use-cases/get-all-emails.use-case';
 import { GetSubscriberCountUseCase } from './use-cases/get-subscriber-count.use-case';
 import { ListSubscribersUseCase } from './use-cases/list-subscribers.use-case';
-import { SubscribeInputDto } from './dto/subscribe.dto';
+import {
+  SubscribeInputDto,
+  UnsubscribeInputDto,
+  UnsubscribeQueryDto,
+} from './dto/subscribe.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Public } from '../auth/decorators/public.decorator';
-import type { SubscriberCountResponse, SubscribersListResponse } from './contracts';
+import type {
+  SubscriberCountResponse,
+  SubscribersListResponse,
+  UnsubscribeResult,
+} from './contracts';
 
 @Controller('subscribe')
 @UseGuards(JwtAuthGuard)
 export class SubscribeController {
   constructor(
     private readonly subscribeUseCase: SubscribeUseCase,
+    private readonly unsubscribeUseCase: UnsubscribeUseCase,
     private readonly getAllEmailsUseCase: GetAllEmailsUseCase,
     private readonly getSubscriberCountUseCase: GetSubscriberCountUseCase,
     private readonly listSubscribersUseCase: ListSubscribersUseCase,
@@ -42,5 +52,19 @@ export class SubscribeController {
   async getEmails(): Promise<{ emails: string[] }> {
     const emails = await this.getAllEmailsUseCase.run();
     return { emails };
+  }
+
+  @Post('unsubscribe')
+  @Public()
+  unsubscribe(@Body() body: UnsubscribeInputDto): Promise<UnsubscribeResult> {
+    return this.unsubscribeUseCase.run(body.email);
+  }
+
+  @Get('unsubscribe')
+  @Public()
+  unsubscribeByQuery(
+    @Query() query: UnsubscribeQueryDto,
+  ): Promise<UnsubscribeResult> {
+    return this.unsubscribeUseCase.run(query.email);
   }
 }

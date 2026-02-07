@@ -25,3 +25,7 @@ export interface SubscriberListItem {
 }
 
 export type SubscribersListResponse = CursorListResponse<SubscriberListItem>;
+
+export interface UnsubscribeResult {
+  ok: true;
+}

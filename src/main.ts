@@ -4,9 +4,9 @@ import { NestFactory } from '@nestjs/core';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import helmet, { HelmetOptions } from 'helmet';
-import morgan from 'morgan';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './shared/filters/http-exception.filter';
+import { httpRequestLogger } from './shared/middleware/http-request-logger.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,8 +25,7 @@ async function bootstrap() {
   const cookieSecret = config.get<string>('app.cookieSecret');
   app.use(cookieParser(cookieSecret));
 
-  const morganFormat = isProduction ? 'combined' : 'dev';
-  app.use(morgan(morganFormat));
+  app.use(httpRequestLogger);
 
   const corsOrigin = config.get<string>('app.corsOrigin');
   app.enableCors({

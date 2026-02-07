@@ -24,11 +24,13 @@ export class ArticleNotifyMailService {
     const articleUrl = `${frontendUrl}/${lang}/article/${article.groupId}`;
     const subject = NEW_ARTICLE_SUBJECT[lang] ?? NEW_ARTICLE_SUBJECT.es;
 
+    const unsubscribeUrl = `${frontendUrl}/${lang}/subscription/unsubscribe?email=${encodeURIComponent(to)}`;
     const html = renderEmailTemplate('new-article', lang, {
       title: article.title,
       excerpt: article.excerpt,
       author: article.author,
       articleUrl,
+      unsubscribeUrl,
     });
     return this.mailService.send({ from, to, subject, html });
   }
