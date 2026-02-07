@@ -1,16 +1,16 @@
 import { registerAs } from '@nestjs/config';
 
 export default registerAs('database', () => ({
-  path: process.env.DATABASE_PATH!,
+  url: process.env.DATABASE_URL!,
   logging: process.env.NODE_ENV === 'development',
 }));
 
 export function getDatabaseOptionsFromEnv(): {
-  path: string;
+  url: string;
   logging: boolean;
 } {
   return {
-    path: process.env.DATABASE_PATH!,
+    url: process.env.DATABASE_URL!,
     logging: process.env.NODE_ENV === 'development',
   };
 }

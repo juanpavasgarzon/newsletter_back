@@ -30,17 +30,18 @@ export class ListArticlesUseCase {
 
     if (q?.trim()) {
       const term = `%${q.trim()}%`;
-      qb.andWhere('(a.title LIKE :term OR a.excerpt LIKE :term OR a.content LIKE :term OR a.tags LIKE :termTags)', {
+      qb.andWhere('(a.title ILIKE :term OR a.excerpt ILIKE :term OR a.content ILIKE :term OR a.tags ILIKE :term)', {
         term,
-        termTags: `%${q.trim()}%`,
       });
     }
 
     if (cursor) {
       const decoded = decodeCursor<CursorPayload>(cursor);
-      if (decoded?.id && decoded?.publishedAt) {
+      if (decoded?.id != null && decoded?.publishedAt != null) {
+        const pubAt =
+          typeof decoded.publishedAt === 'string' ? decoded.publishedAt : new Date(decoded.publishedAt).toISOString();
         qb.andWhere('(a.publishedAt < :pubAt OR (a.publishedAt = :pubAt AND a.id < :id))', {
-          pubAt: decoded.publishedAt,
+          pubAt,
           id: decoded.id,
         });
       }

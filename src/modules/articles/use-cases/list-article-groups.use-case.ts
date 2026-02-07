@@ -28,9 +28,10 @@ export class ListArticleGroupsUseCase {
 
     if (q?.trim()) {
       const term = `%${q.trim()}%`;
-      qb = qb.andWhere('(a.title LIKE :term OR a.excerpt LIKE :term OR a.content LIKE :term OR a.tags LIKE :term)', {
-        term,
-      });
+      qb = qb.andWhere(
+        '(a.title ILIKE :term OR a.excerpt ILIKE :term OR a.content ILIKE :term OR a.tags ILIKE :term)',
+        { term },
+      );
     }
 
     if (cursor) {
@@ -63,7 +64,8 @@ export class ListArticleGroupsUseCase {
       }
 
       const existing = byGroup.get(row.groupId);
-      const ts = new Date(row.publishedAt).getTime();
+      const publishedAt = row.publishedAt instanceof Date ? row.publishedAt : new Date(row.publishedAt as string);
+      const ts = publishedAt.getTime();
 
       if (existing === undefined) {
         byGroup.set(row.groupId, {

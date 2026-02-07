@@ -1,3 +1,4 @@
+import { toISOString } from '../../../shared/utils/date.util';
 import type { ArticleResponse } from '../contracts';
 import type { Article } from '../entities/article.entity';
 
@@ -7,8 +8,8 @@ export function toArticleResponse(article: Article): ArticleResponse {
     groupId: article.groupId,
     slug: article.slug,
     author: article.author,
-    publishedAt: article.publishedAt.toISOString(),
-    updatedAt: article.updatedAt instanceof Date ? article.updatedAt.toISOString() : String(article.updatedAt),
+    publishedAt: toISOString(article.publishedAt),
+    updatedAt: toISOString(article.updatedAt),
     tags: Array.isArray(article.tags) ? article.tags : [],
     lang: article.lang,
     title: article.title,

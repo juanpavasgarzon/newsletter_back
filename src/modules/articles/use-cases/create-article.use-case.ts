@@ -58,6 +58,7 @@ export class CreateArticleUseCase {
       title: dto.title,
       excerpt: dto.excerpt,
       content: dto.content,
+      publishedAt: new Date(),
     });
     const saved = await this.articleRepo.save(article);
 

@@ -15,10 +15,6 @@ FROM node:22-alpine AS production
 
 WORKDIR /app
 
-RUN apk add --no-cache sqlite
-
-RUN mkdir -p /app/data && chmod 777 /app/data
-
 COPY package.json package-lock.json ./
 
 COPY --from=builder /app/dist ./dist

@@ -5,7 +5,7 @@ export const envValidationSchema = Joi.object({
   NODE_ENV: Joi.string().required(),
   API_PREFIX: Joi.string().required(),
   COOKIE_SECRET: Joi.string().optional().allow(''),
-  DATABASE_PATH: Joi.string().required(),
+  DATABASE_URL: Joi.string().required(),
   ADMIN_SECRET: Joi.string().required(),
   JWT_SECRET: Joi.string().required(),
   JWT_EXPIRES_IN_SECONDS: Joi.string().required(),

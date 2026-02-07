@@ -9,8 +9,8 @@ import * as path from 'path';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        type: 'better-sqlite3',
-        database: config.get<string>('database.path'),
+        type: 'postgres',
+        url: config.get<string>('database.url'),
         autoLoadEntities: true,
         migrations: [path.join(__dirname, 'migrations', '*{.ts,.js}')],
         synchronize: false,
