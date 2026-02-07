@@ -21,7 +21,7 @@ export class ArticleNotifyMailService {
   sendNewArticle(to: string, lang: string, article: NewArticleEmailPayload): Promise<void> {
     const from = this.mailConfig.from!;
     const frontendUrl = this.mailConfig.frontendUrl!;
-    const articleUrl = `${frontendUrl}/${lang}/article/${article.groupId}`;
+    const articleUrl = `${frontendUrl}/${lang}/articles/${article.groupId}`;
     const subject = NEW_ARTICLE_SUBJECT[lang] ?? NEW_ARTICLE_SUBJECT.es;
 
     const unsubscribeUrl = `${frontendUrl}/${lang}/subscription/unsubscribe?email=${encodeURIComponent(to)}`;

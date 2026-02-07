@@ -62,24 +62,21 @@ export class CreateArticleUseCase {
     });
     const saved = await this.articleRepo.save(article);
 
-    const isFirstArticleOfGroup = dto.groupId === undefined;
-    if (isFirstArticleOfGroup) {
-      const payload = {
-        groupId: saved.groupId,
-        title: saved.title,
-        excerpt: saved.excerpt,
-        author: saved.author,
-        lang: saved.lang,
-      };
-      const subscribers = await this.subscribeNotify.getSubscribersForNotificationByLang(saved.lang);
-      const sendPromises = subscribers.map((sub) =>
-        this.articleNotifyMail.sendNewArticle(sub.email, sub.lang, payload),
-      );
-      const results = await Promise.allSettled(sendPromises);
-      for (const result of results) {
-        if (result.status === 'rejected') {
-          console.error(result.reason);
-        }
+    const payload = {
+      groupId: saved.groupId,
+      title: saved.title,
+      excerpt: saved.excerpt,
+      author: saved.author,
+      lang: saved.lang,
+    };
+
+    const subscribers = await this.subscribeNotify.getSubscribersForNotificationByLang(saved.lang);
+    const sendPromises = subscribers.map((sub) => this.articleNotifyMail.sendNewArticle(sub.email, sub.lang, payload));
+    const results = await Promise.allSettled(sendPromises);
+
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        console.error(result.reason);
       }
     }
 
